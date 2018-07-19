@@ -32,6 +32,7 @@ public class WriteAspectFile {
     }
 
     public void run() {
+        start();
         for (CheckPointBean item : list) {
             if (item.getPointType() == 1) {
                 sensors(item);
@@ -41,10 +42,19 @@ public class WriteAspectFile {
                 local(item);
             }
         }
-        end();
+//        end(psiClass);
     }
 
-    private void end() {
+    private void start() {
+        PsiModifierList modifierList = psiClass.getModifierList();
+        if (modifierList != null) {
+            if (!modifierList.hasModifierProperty(PsiKeyword.PUBLIC)) {
+                modifierList.add(psiElementFactory.createKeyword(PsiKeyword.PUBLIC));
+            }
+        }
+    }
+
+    private void end(PsiClass psiClass) {
         JavaCodeStyleManager javaCodeStyleManager = JavaCodeStyleManager.getInstance(project);
         javaCodeStyleManager.optimizeImports(psiClass.getContainingFile());
         javaCodeStyleManager.shortenClassReferences(psiClass);
@@ -56,18 +66,9 @@ public class WriteAspectFile {
             psiClassSensors = psiElementFactory.createClassFromText(constant.SENSORS_ASPECT, null).getInnerClasses()[0];
             psiClass.add(psiClassSensors);
         }
-
-        String AnnotationName = psiClass.getName().replace("Aspect", "") + "Note$Sensors$" + annotationName;
-        String methodName = formatNamed(annotationName);
-        JvmParameter[] parameters = psiMethodPoint.getParameters();
-        for (int i = 0; i < list.size(); i++) {
-            if(i == 0){
-                if(psiClassPoint.getName() != null && psiClassPoint.getName().length() > 0){
-
-                }
-            }
-        }
+        writeMethod(item, psiClassSensors, constant.ASPECT_SENSORS_METHOD);
     }
+
 
     private void um(CheckPointBean item) {
         PsiClass psiClassUm = psiClass.findInnerClassByName("Um", true);
@@ -75,6 +76,7 @@ public class WriteAspectFile {
             psiClassUm = psiElementFactory.createClassFromText(constant.UM_ASPECT, null).getInnerClasses()[0];
             psiClass.add(psiClassUm);
         }
+        writeMethod(item, psiClassUm, constant.ASPECT_UM_METHOD);
     }
 
     private void local(CheckPointBean item) {
@@ -83,12 +85,54 @@ public class WriteAspectFile {
             psiClassLocal = psiElementFactory.createClassFromText(constant.LOCAL_ASPECT, null).getInnerClasses()[0];
             psiClass.add(psiClassLocal);
         }
+        writeMethod(item, psiClassLocal, constant.ASPECT_LOCAL_METHOD);
     }
 
-    private static String formatNamed(String name) {
+    private void writeMethod(CheckPointBean item, PsiClass psiClassSensors, String format) {
+        String AnnotationName = psiClass.getName().replace("Aspect", "") + "Note$Sensors$" + annotationName;
+        String methodName = formatNamedD(annotationName);
+        StringBuilder checkedStr = new StringBuilder();
+        StringBuilder values = new StringBuilder();
+        JvmParameter[] parameters = psiMethodPoint.getParameters();
+        List<Integer> parameterList = item.getParameterList();
+        boolean isHasGetParameter = false;
+        for (int i = 0; i < parameterList.size(); i++) {
+            Integer type = parameterList.get(i);
+            if (type == 0) {
+                continue;
+            }
+            if (i == 0) {
+                if (psiClassPoint.getName() != null && psiClassPoint.getName().length() > 0) {
+                    checkedStr.append("checked = checked && joinPoint.getThis() instanceof " + psiClassPoint.getName() + ";\n");
+                    values.append(psiClassPoint.getName() + " m" + formatNamedD(psiClassPoint.getName()) + " = " + "(" + psiClassPoint.getName() + ")joinPoint.getThis();\n");
+                }
+            } else {
+                isHasGetParameter = true;
+                String classPaName = getParameterClassName(parameters[i - 1]);
+                if (type == 1) {
+                    checkedStr.append("checked = checked && joinPoint.getArgs()[" + (i - 1) + "] instanceof " + classPaName + ";\n");
+                } else {
+                    checkedStr.append("checked = checked && Tools.checkTypeNullAble(joinPoint.getArgs()[" + (i - 1) + "], " + classPaName + ".class;\n");
+                }
+                values.append(classPaName + " " + parameters[i - 1].getName() + " = " + "(" + classPaName + ")joinPoint.getArgs()[" + (i - 1) + "];\n");
+            }
+        }
+        if (isHasGetParameter) {
+            checkedStr.insert(0, "checked = checked && joinPoint.getArgs() != null && joinPoint.getArgs().length == " + parameters.length + ";\n");
+        }
+
+        String methodStr = String.format(format, AnnotationName, methodName, checkedStr.toString(), values.toString());
+        psiClassSensors.add(psiElementFactory.createClassFromText(methodStr, null).getAllMethods()[0]);
+    }
+
+    private String getParameterClassName(JvmParameter jvmParameter) {
+        return jvmParameter.getType().toString().split(":")[1];
+    }
+
+    private static String formatNamedD(String name) {
         char[] ch = name.toCharArray();
-        if (ch[0] >= 'A' && ch[0] <= 'Z') {
-            ch[0] = (char) (ch[0] + 32);
+        if (ch[0] >= 'a' && ch[0] <= 'z') {
+            ch[0] = (char) (ch[0] - 32);
         }
         return new String(ch);
     }

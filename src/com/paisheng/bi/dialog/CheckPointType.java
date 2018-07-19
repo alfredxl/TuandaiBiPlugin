@@ -149,7 +149,7 @@ public class CheckPointType {
         if (name == null) {
             name = "";
         }
-        return name + "$$" + formatNamed(psiMethod.getName());
+        return name + formatNamed(psiMethod.getName());
     }
 
     private static String formatNamed(String name) {

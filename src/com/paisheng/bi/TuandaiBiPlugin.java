@@ -13,10 +13,12 @@ import com.paisheng.bi.dialog.CheckMethodDialog;
 import com.paisheng.bi.dialog.CheckPointType;
 import com.paisheng.bi.util.PsiMethodUtil;
 import com.paisheng.bi.util.WriteToFile;
+
 import java.util.List;
 
 
 public class TuandaiBiPlugin extends AnAction {
+    private boolean isWriting = false;
 
     @Override
     public void actionPerformed(final AnActionEvent e) {
@@ -43,7 +45,10 @@ public class TuandaiBiPlugin extends AnAction {
                                 final PsiMethod selectMethod = psiMethods[position];
                                 CheckPointType.show(psiClass, selectMethod, new CheckPointType.CheckPointListener() {
                                     public void checked(String className, List<CheckPointBean> list) {
-                                        WriteToFile.write(e, psiClass, selectMethod, className, list);
+                                        if (!isWriting) {
+                                            isWriting = true;
+                                            WriteToFile.write(e, psiClass, selectMethod, className, list);
+                                        }
                                     }
                                 });
                             }
@@ -51,10 +56,14 @@ public class TuandaiBiPlugin extends AnAction {
                     } else {
                         CheckPointType.show(psiClass, psiMethods[0], new CheckPointType.CheckPointListener() {
                             public void checked(String className, List<CheckPointBean> list) {
-                                WriteToFile.write(e, psiClass, psiMethods[0], className, list);
+                                if (!isWriting) {
+                                    isWriting = true;
+                                    WriteToFile.write(e, psiClass, psiMethods[0], className, list);
+                                }
                             }
                         });
-                    } }
+                    }
+                }
             }
         }
     }

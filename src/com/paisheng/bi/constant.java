@@ -59,10 +59,26 @@ public class constant {
             "        }\n" +
             "    }";
 
-    public static final String ASPECT_METHOD = "@Before(\"execution(@bi.%s * *(..))\")\n" +
-            "        public void %s(JoinPoint joinPoint) {\n" +
-            "            ILocalRecordIProvider mLocalRecordIProvider = getLocalRecordIProvider();\n%s" +
-            "            if (mLocalRecordIProvider != null%s) {\n%s" +
+    public static final String ASPECT_SENSORS_METHOD = "@Before(\"execution(@bi.%s * *(..))\")\n" +
+            "        public void sensors%s(JoinPoint joinPoint) {\n" +
+            "            boolean checked = true;\n%s" +
+            "            if (checked) {\n%s" +
+            "            }\n" +
+            "        }";
+
+    public static final String ASPECT_UM_METHOD = "@Before(\"execution(@bi.%s * *(..))\")\n" +
+            "        public void um%s(JoinPoint joinPoint) {\n" +
+            "            IUMRecordIProvider mUMRecordIProvider = getUMRecordIProvider();\n" +
+            "            boolean checked = mUMRecordIProvider != null;\n%s" +
+            "            if (checked) {\n%s" +
+            "            }\n" +
+            "        }";
+
+    public static final String ASPECT_LOCAL_METHOD = "@Before(\"execution(@bi.%s * *(..))\")\n" +
+            "        public void local%s(JoinPoint joinPoint) {\n" +
+            "            ILocalRecordIProvider mLocalRecordIProvider = getLocalRecordIProvider();\n" +
+            "            boolean checked = mLocalRecordIProvider != null;\n%s" +
+            "            if (checked) {\n%s" +
             "            }\n" +
             "        }";
 }
