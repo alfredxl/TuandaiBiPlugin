@@ -111,10 +111,12 @@ public class WriteAspectFile {
             } else {
                 isHasGetParameter = true;
                 String classPaName = getParameterClassName(parameters[i - 1]);
+                // List需要做特殊处理
+                String TypeName = classPaName.contains("List<") ? "List" : classPaName;
                 if (type == 1) {
-                    checkedStr.append("checked = checked && joinPoint.getArgs()[" + (i - 1) + "] instanceof " + classPaName + ";\n");
+                    checkedStr.append("checked = checked && joinPoint.getArgs()[" + (i - 1) + "] instanceof " + TypeName + ";\n");
                 } else {
-                    checkedStr.append("checked = checked && Tools.checkTypeNullAble(joinPoint.getArgs()[" + (i - 1) + "], " + classPaName + ".class);\n");
+                    checkedStr.append("checked = checked && Tools.checkTypeNullAble(joinPoint.getArgs()[" + (i - 1) + "], " + TypeName + ".class);\n");
                 }
                 values.append(classPaName + " " + parameters[i - 1].getName() + " = " + "(" + classPaName + ")joinPoint.getArgs()[" + (i - 1) + "];\n");
             }
