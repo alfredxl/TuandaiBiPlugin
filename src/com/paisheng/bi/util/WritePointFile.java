@@ -42,15 +42,15 @@ public class WritePointFile {
     }
 
     private void sensors(CheckPointBean item) {
-        psiMethodPoint.getModifierList().add(psiElementFactory.createAnnotationFromText("@" + psiClassNote.getName() + "$Sensors$" + annotationName, psiMethodPoint));
+        psiMethodPoint.getModifierList().add(psiElementFactory.createAnnotationFromText("@" + psiClassNote.getName() + ".Sensors." + annotationName, psiMethodPoint));
     }
 
 
     private void um(CheckPointBean item) {
-        psiMethodPoint.getModifierList().add(psiElementFactory.createAnnotationFromText("@" + psiClassNote.getName() + "$Um$" + annotationName, psiMethodPoint));
+        psiMethodPoint.getModifierList().add(psiElementFactory.createAnnotationFromText("@" + psiClassNote.getName() + ".Um." + annotationName, psiMethodPoint));
     }
 
     private void local(CheckPointBean item) {
-        psiMethodPoint.getModifierList().add(psiElementFactory.createAnnotationFromText("@" + psiClassNote.getName() + "$Local$" + annotationName, psiMethodPoint));
+        psiMethodPoint.getModifierList().add(psiElementFactory.createAnnotationFromText("@" + psiClassNote.getName() + ".Local." + annotationName, psiMethodPoint));
     }
 }
