@@ -128,7 +128,29 @@ public class WriteAspectFile {
     }
 
     private String getParameterClassName(JvmParameter jvmParameter) {
-        return jvmParameter.getType().toString().split(":")[1];
+        return basicTypesToPackagingType(jvmParameter.getType().toString().split(":")[1]);
+    }
+
+    private String basicTypesToPackagingType(String className) {
+        if ("byte".equals(className)) {
+            return "Byte";
+        } else if ("short".equals(className)) {
+            return "Short";
+        } else if ("int".equals(className)) {
+            return "Integer";
+        } else if ("long".equals(className)) {
+            return "Long";
+        } else if ("float".equals(className)) {
+            return "Float";
+        } else if ("double".equals(className)) {
+            return "Double";
+        } else if ("boolean".equals(className)) {
+            return "Boolean";
+        } else if ("char".equals(className)) {
+            return "Character";
+        } else {
+            return className;
+        }
     }
 
     private static String formatNamedD(String name) {
