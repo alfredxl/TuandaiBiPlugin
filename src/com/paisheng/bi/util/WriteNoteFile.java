@@ -47,7 +47,8 @@ public class WriteNoteFile {
         if (modifierList != null) {
             if (!modifierList.hasModifierProperty(PsiKeyword.PUBLIC)) {
                 modifierList.add(psiElementFactory.createKeyword(PsiKeyword.PUBLIC));
-//                modifierList.add(psiElementFactory.createAnnotationFromText("@Target({ElementType.METHOD})\n@Retention(RetentionPolicy.CLASS)\n ", null));
+                modifierList.addBefore(psiElementFactory.createAnnotationFromText("@Retention(RetentionPolicy.CLASS)", null), modifierList.getFirstChild());
+                modifierList.addBefore(psiElementFactory.createAnnotationFromText("@Target({ElementType.METHOD})", null), modifierList.getFirstChild());
             }
         }
     }
