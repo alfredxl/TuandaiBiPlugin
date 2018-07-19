@@ -1,7 +1,8 @@
 package com.paisheng.bi.util;
 
-import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 import com.paisheng.bi.bean.CheckPointBean;
 import com.paisheng.bi.constant;
@@ -10,7 +11,6 @@ import java.util.List;
 
 public class WriteNoteFile {
     private Project project;
-    private Editor editor;
     private PsiClass psiClass;//需要写入的Note类
     private PsiElementFactory psiElementFactory;
     private PsiClass psiClassPoint;//需要添加注解的类
@@ -18,9 +18,8 @@ public class WriteNoteFile {
     private String annotationName;//注解类的名称
     private List<CheckPointBean> list;//参数；
 
-    public WriteNoteFile(Project project, Editor editor, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
+    public WriteNoteFile(Project project, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
         this.project = project;
-        this.editor = editor;
         this.psiClass = psiClass;
         psiElementFactory = JavaPsiFacade.getElementFactory(project);
         this.psiClassPoint = psiClassPoint;
@@ -30,15 +29,28 @@ public class WriteNoteFile {
     }
 
     public void run() {
-        start();
-        for (CheckPointBean item : list) {
-            if (item.getPointType() == 1) {
-                sensors(item);
-            } else if (item.getPointType() == 2) {
-                um(item);
-            } else if (item.getPointType() == 3) {
-                local(item);
+        try {
+            start();
+            for (CheckPointBean item : list) {
+                if (item.getPointType() == 1) {
+                    sensors(item);
+                } else if (item.getPointType() == 2) {
+                    um(item);
+                } else if (item.getPointType() == 3) {
+                    local(item);
+                }
             }
+            openFiles(project, psiClass);
+        } catch (Exception e) {
+            Messages.showInfoMessage(e.toString(), "错误");
+        }
+    }
+
+    private void openFiles(Project project, PsiClass... psiClasses) {
+        FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
+        for (PsiClass psiClass :
+                psiClasses) {
+            fileEditorManager.openFile(psiClass.getContainingFile().getVirtualFile(), true, true);
         }
     }
 

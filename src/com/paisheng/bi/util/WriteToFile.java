@@ -2,9 +2,7 @@ package com.paisheng.bi.util;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -17,36 +15,35 @@ import java.util.List;
 public class WriteToFile {
     public static void write(final AnActionEvent e, final PsiClass psiClass, final PsiMethod selectMethod, final String className, final List<CheckPointBean> list) {
         final Project project = e.getProject();
-        final Editor editor = e.getData(PlatformDataKeys.EDITOR);
         WriteCommandAction.runWriteCommandAction(project, new Runnable() {
             public void run() {
                 // 创建文件系统
                 PsiClass[] virtualFiles = createFile(e);
                 // 写文件
                 if (virtualFiles != null) {
-                    toWrite(project, editor, virtualFiles, psiClass, selectMethod, className, list);
+                    toWrite(project, virtualFiles, psiClass, selectMethod, className, list);
                 }
             }
         });
     }
 
-    private static void toWrite(Project project, Editor editor, PsiClass[] psiClassesList, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
-        writeAspect(project, editor, psiClassesList[0], psiClassPoint, psiMethodPoint, annotationName, list, psiClassesList[1].getName());
-        writeNote(project, editor, psiClassesList[1], psiClassPoint, psiMethodPoint, annotationName, list);
-        writePoint(project, editor, psiClassesList[1], psiClassPoint, psiMethodPoint, annotationName, list);
+    private static void toWrite(final Project project, final PsiClass[] psiClassesList, final PsiClass psiClassPoint, final PsiMethod psiMethodPoint, final String annotationName, final List<CheckPointBean> list) {
+        writeAspect(project, psiClassesList[0], psiClassPoint, psiMethodPoint, annotationName, list, psiClassesList[1].getName());
+        writeNote(project, psiClassesList[1], psiClassPoint, psiMethodPoint, annotationName, list);
+        writePoint(project, psiClassesList[1], psiClassPoint, psiMethodPoint, annotationName, list);
     }
 
-    private static void writeAspect(Project project, Editor editor, PsiClass psiClass, PsiClass psiClassPoint,
+    private static void writeAspect(Project project, PsiClass psiClass, PsiClass psiClassPoint,
                                     PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list, String noteName) {
-        new WriteAspectFile(project, editor, psiClass, psiClassPoint, psiMethodPoint, annotationName, list, noteName).run();
+        new WriteAspectFile(project, psiClass, psiClassPoint, psiMethodPoint, annotationName, list, noteName).run();
     }
 
-    private static void writeNote(Project project, Editor editor, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
-        new WriteNoteFile(project, editor, psiClass, psiClassPoint, psiMethodPoint, annotationName, list).run();
+    private static void writeNote(Project project, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
+        new WriteNoteFile(project, psiClass, psiClassPoint, psiMethodPoint, annotationName, list).run();
     }
 
-    private static void writePoint(Project project, Editor editor, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
-        new WritePointFile(project, editor, psiClass, psiClassPoint, psiMethodPoint, annotationName, list).run();
+    private static void writePoint(Project project, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
+        new WritePointFile(project, psiClass, psiClassPoint, psiMethodPoint, annotationName, list).run();
     }
 
     private static PsiClass[] createFile(AnActionEvent e) {

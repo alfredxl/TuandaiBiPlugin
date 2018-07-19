@@ -67,17 +67,6 @@ public class TuandaiBiPlugin extends AnAction {
             }
         }
     }
-
-    @Override
-    public void update(AnActionEvent e) {
-        Editor editor = e.getData(PlatformDataKeys.EDITOR);
-        if (editor != null) {
-            e.getPresentation().setEnabled(true);
-        } else {
-            e.getPresentation().setEnabled(false);
-        }
-    }
-
 //    private PsiDirectory getSrcDirectory(PsiDirectory psiDirectory) {
 //        if (!psiDirectory.getName().equals("src")) {
 //            return getSrcDirectory(psiDirectory.getParentDirectory());

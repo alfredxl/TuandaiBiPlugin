@@ -1,10 +1,10 @@
 package com.paisheng.bi.util;
 
 import com.intellij.lang.jvm.JvmParameter;
-import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.paisheng.bi.bean.CheckPointBean;
 import com.paisheng.bi.constant;
 
@@ -12,7 +12,6 @@ import java.util.List;
 
 public class WriteAspectFile {
     private Project project;
-    private Editor editor;
     private PsiClass psiClass;//需要写入的Aspect类
     private PsiElementFactory psiElementFactory;
     private PsiClass psiClassPoint;//需要添加注解的类
@@ -21,9 +20,8 @@ public class WriteAspectFile {
     private List<CheckPointBean> list;//参数；
     private String noteName;//对应Note类名称
 
-    public WriteAspectFile(Project project, Editor editor, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list, String noteName) {
+    public WriteAspectFile(Project project, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list, String noteName) {
         this.project = project;
-        this.editor = editor;
         this.psiClass = psiClass;
         psiElementFactory = JavaPsiFacade.getElementFactory(project);
         this.psiClassPoint = psiClassPoint;
@@ -34,17 +32,29 @@ public class WriteAspectFile {
     }
 
     public void run() {
-        start();
-        for (CheckPointBean item : list) {
-            if (item.getPointType() == 1) {
-                sensors(item);
-            } else if (item.getPointType() == 2) {
-                um(item);
-            } else if (item.getPointType() == 3) {
-                local(item);
+        try {
+            start();
+            for (CheckPointBean item : list) {
+                if (item.getPointType() == 1) {
+                    sensors(item);
+                } else if (item.getPointType() == 2) {
+                    um(item);
+                } else if (item.getPointType() == 3) {
+                    local(item);
+                }
             }
+            openFiles(project, psiClass);
+        } catch (Exception e) {
+            Messages.showInfoMessage(e.toString(), "错误");
         }
-//        end(psiClass);
+    }
+
+    private void openFiles(Project project, PsiClass... psiClasses) {
+        FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
+        for (PsiClass psiClass :
+                psiClasses) {
+            fileEditorManager.openFile(psiClass.getContainingFile().getVirtualFile(), true, true);
+        }
     }
 
     private void start() {
@@ -54,12 +64,6 @@ public class WriteAspectFile {
                 modifierList.add(psiElementFactory.createKeyword(PsiKeyword.PUBLIC));
             }
         }
-    }
-
-    private void end(PsiClass psiClass) {
-        JavaCodeStyleManager javaCodeStyleManager = JavaCodeStyleManager.getInstance(project);
-        javaCodeStyleManager.optimizeImports(psiClass.getContainingFile());
-        javaCodeStyleManager.shortenClassReferences(psiClass);
     }
 
     private void sensors(CheckPointBean item) {
