@@ -67,44 +67,50 @@ public class WriteNoteFile {
 
     private void sensors(CheckPointBean item) {
         PsiClass psiClassSensors = psiClass.findInnerClassByName("Sensors", true);
+        boolean isWillBeAdd = false;
         if (psiClassSensors == null) {
             String str = String.format(constant.ASPECT_ANOTE, "Sensors");
             psiClassSensors = psiElementFactory.createClassFromText(str, null).getInnerClasses()[0];
-            psiClass.add(psiClassSensors);
+            isWillBeAdd = true;
         }
 
-        toAddSubA(psiClassSensors);
+        toAddSubA(psiClassSensors, isWillBeAdd);
     }
 
 
     private void um(CheckPointBean item) {
         PsiClass psiClassUm = psiClass.findInnerClassByName("Um", true);
+        boolean isWillBeAdd = false;
         if (psiClassUm == null) {
             String str = String.format(constant.ASPECT_ANOTE, "Um");
             psiClassUm = psiElementFactory.createClassFromText(str, null).getInnerClasses()[0];
-            psiClass.add(psiClassUm);
+            isWillBeAdd = true;
         }
 
-        toAddSubA(psiClassUm);
+        toAddSubA(psiClassUm, isWillBeAdd);
     }
 
     private void local(CheckPointBean item) {
         PsiClass psiClassLocal = psiClass.findInnerClassByName("Local", true);
+        boolean isWillBeAdd = false;
         if (psiClassLocal == null) {
             String str = String.format(constant.ASPECT_ANOTE, "Local");
             psiClassLocal = psiElementFactory.createClassFromText(str, null).getInnerClasses()[0];
-            psiClass.add(psiClassLocal);
+            isWillBeAdd = true;
         }
 
-        toAddSubA(psiClassLocal);
+        toAddSubA(psiClassLocal, isWillBeAdd);
     }
 
-    private void toAddSubA(PsiClass psiClassSensors) {
-        PsiClass psiClassSub = psiClassSensors.findInnerClassByName(annotationName, true);
+    private void toAddSubA(PsiClass psiClassParent, boolean isWillBeAdd) {
+        PsiClass psiClassSub = psiClassParent.findInnerClassByName(annotationName, true);
         if (psiClassSub == null) {
             String str = String.format(constant.ASPECT_ANOTE, annotationName);
             psiClassSub = psiElementFactory.createClassFromText(str, null).getInnerClasses()[0];
-            psiClassSensors.add(psiClassSub);
+            psiClassParent.add(psiClassSub);
+        }
+        if (isWillBeAdd) {
+            psiClass.add(psiClassParent);
         }
     }
 }

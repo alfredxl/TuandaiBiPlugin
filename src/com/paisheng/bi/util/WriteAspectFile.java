@@ -68,33 +68,36 @@ public class WriteAspectFile {
 
     private void sensors(CheckPointBean item) {
         PsiClass psiClassSensors = psiClass.findInnerClassByName("Sensors", true);
+        boolean isWillBeAdd = false;
         if (psiClassSensors == null) {
             psiClassSensors = psiElementFactory.createClassFromText(constant.SENSORS_ASPECT, null).getInnerClasses()[0];
-            psiClass.add(psiClassSensors);
+            isWillBeAdd = true;
         }
-        writeMethod(item, psiClassSensors, constant.ASPECT_SENSORS_METHOD);
+        writeMethod(item, psiClassSensors, constant.ASPECT_SENSORS_METHOD, isWillBeAdd);
     }
 
 
     private void um(CheckPointBean item) {
         PsiClass psiClassUm = psiClass.findInnerClassByName("Um", true);
+        boolean isWillBeAdd = false;
         if (psiClassUm == null) {
             psiClassUm = psiElementFactory.createClassFromText(constant.UM_ASPECT, null).getInnerClasses()[0];
-            psiClass.add(psiClassUm);
+            isWillBeAdd = true;
         }
-        writeMethod(item, psiClassUm, constant.ASPECT_UM_METHOD);
+        writeMethod(item, psiClassUm, constant.ASPECT_UM_METHOD, isWillBeAdd);
     }
 
     private void local(CheckPointBean item) {
         PsiClass psiClassLocal = psiClass.findInnerClassByName("Local", true);
+        boolean isWillBeAdd = false;
         if (psiClassLocal == null) {
             psiClassLocal = psiElementFactory.createClassFromText(constant.LOCAL_ASPECT, null).getInnerClasses()[0];
-            psiClass.add(psiClassLocal);
+            isWillBeAdd = true;
         }
-        writeMethod(item, psiClassLocal, constant.ASPECT_LOCAL_METHOD);
+        writeMethod(item, psiClassLocal, constant.ASPECT_LOCAL_METHOD, isWillBeAdd);
     }
 
-    private void writeMethod(CheckPointBean item, PsiClass psiClassSensors, String format) {
+    private void writeMethod(CheckPointBean item, PsiClass psiClassParent, String format, boolean isWillBeAdd) {
         String AnnotationName = noteName + "$Sensors$" + annotationName;
         String methodName = formatNamedD(annotationName);
         StringBuilder checkedStr = new StringBuilder();
@@ -130,7 +133,10 @@ public class WriteAspectFile {
         }
 
         String methodStr = String.format(format, AnnotationName, methodName, checkedStr.toString(), values.toString());
-        psiClassSensors.add(psiElementFactory.createClassFromText(methodStr, null).getAllMethods()[0]);
+        psiClassParent.add(psiElementFactory.createClassFromText(methodStr, null).getAllMethods()[0]);
+        if (isWillBeAdd) {
+            psiClass.add(psiClassParent);
+        }
     }
 
     private String getParameterClassName(JvmParameter jvmParameter) {

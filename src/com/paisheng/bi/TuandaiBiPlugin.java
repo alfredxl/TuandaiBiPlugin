@@ -22,6 +22,7 @@ public class TuandaiBiPlugin extends AnAction {
 
     @Override
     public void actionPerformed(final AnActionEvent e) {
+        isWriting = false;
         Project project = e.getProject();
         if (project != null) {
             Editor editor = e.getData(PlatformDataKeys.EDITOR);
