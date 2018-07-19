@@ -114,7 +114,7 @@ public class WriteAspectFile {
                 if (type == 1) {
                     checkedStr.append("checked = checked && joinPoint.getArgs()[" + (i - 1) + "] instanceof " + classPaName + ";\n");
                 } else {
-                    checkedStr.append("checked = checked && Tools.checkTypeNullAble(joinPoint.getArgs()[" + (i - 1) + "], " + classPaName + ".class;\n");
+                    checkedStr.append("checked = checked && Tools.checkTypeNullAble(joinPoint.getArgs()[" + (i - 1) + "], " + classPaName + ".class);\n");
                 }
                 values.append(classPaName + " " + parameters[i - 1].getName() + " = " + "(" + classPaName + ")joinPoint.getArgs()[" + (i - 1) + "];\n");
             }
