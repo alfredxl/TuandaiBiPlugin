@@ -81,4 +81,9 @@ public class constant {
             "            if (checked) {\n%s" +
             "            }\n" +
             "        }";
+
+    public static final String ASPECT_ANOTE = "@Target({ElementType.METHOD})\n" +
+            "        @Retention(RetentionPolicy.CLASS)\n" +
+            "        @interface %s {\n" +
+            "        }";
 }

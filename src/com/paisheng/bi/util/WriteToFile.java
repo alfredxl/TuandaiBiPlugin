@@ -1,15 +1,12 @@
 package com.paisheng.bi.util;
 
-import com.intellij.ide.ui.EditorOptionsTopHitProvider;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.paisheng.bi.bean.CheckPointBean;
@@ -36,6 +33,7 @@ public class WriteToFile {
     private static void toWrite(Project project, Editor editor, PsiClass[] psiClassesList, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
         writeAspect(project, editor, psiClassesList[0], psiClassPoint, psiMethodPoint, annotationName, list, psiClassesList[1].getName());
         writeNote(project, editor, psiClassesList[1], psiClassPoint, psiMethodPoint, annotationName, list);
+        writePoint(project, editor, psiClassesList[1], psiClassPoint, psiMethodPoint, annotationName, list);
     }
 
     private static void writeAspect(Project project, Editor editor, PsiClass psiClass, PsiClass psiClassPoint,
@@ -44,7 +42,11 @@ public class WriteToFile {
     }
 
     private static void writeNote(Project project, Editor editor, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
+        new WriteNoteFile(project, editor, psiClass, psiClassPoint, psiMethodPoint, annotationName, list).run();
+    }
 
+    private static void writePoint(Project project, Editor editor, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
+        new WritePointFile(project, editor, psiClass, psiClassPoint, psiMethodPoint, annotationName, list).run();
     }
 
     private static PsiClass[] createFile(AnActionEvent e) {
@@ -67,7 +69,7 @@ public class WriteToFile {
                     PsiClass[] PsiClassArray = new PsiClass[2];
                     // 查找PsiFile
                     PsiFile psiFile1 = psiFiles[0];
-                    if (psiFile1 instanceof PsiJavaFile && ((PsiJavaFile) psiFile1).getClasses().length > 0) {
+                    if (psiFile1 instanceof PsiJavaFile) {
                         // 赋值
                         PsiClassArray[0] = ((PsiJavaFile) psiFile1).getClasses()[0];
                     } else {
@@ -79,7 +81,7 @@ public class WriteToFile {
                     }
                     //  查找PsiFile
                     PsiFile psiFile2 = psiFiles[1];
-                    if (psiFile2 instanceof PsiJavaFile && ((PsiJavaFile) psiFile2).getClasses().length > 0) {
+                    if (psiFile2 instanceof PsiJavaFile) {
                         // 赋值
                         PsiClassArray[1] = ((PsiJavaFile) psiFile2).getClasses()[0];
                     } else {
@@ -103,11 +105,11 @@ public class WriteToFile {
         PsiFile[] values = new PsiFile[2];
         for (PsiFile item : biPsiDirectory.getFiles()) {
             String name = item.getName();
-            if (name.startsWith("Bi") && name.endsWith("Aspect")) {
+            if (name.startsWith("Bi") && name.endsWith("Aspect.java")) {
                 values[0] = item;
                 continue;
             }
-            if (name.startsWith("Bi") && name.endsWith("Note")) {
+            if (name.startsWith("Bi") && name.endsWith("Note.java")) {
                 values[1] = item;
             }
         }
