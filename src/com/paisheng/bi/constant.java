@@ -58,4 +58,11 @@ public class constant {
             "            return (ILocalRecordIProvider) ARouter.getInstance().build(BiARouterConstant.BI_LOCAL).navigation();\n" +
             "        }\n" +
             "    }";
+
+    public static final String ASPECT_METHOD = "@Before(\"execution(@bi.%s * *(..))\")\n" +
+            "        public void %s(JoinPoint joinPoint) {\n" +
+            "            ILocalRecordIProvider mLocalRecordIProvider = getLocalRecordIProvider();\n%s" +
+            "            if (mLocalRecordIProvider != null%s) {\n%s" +
+            "            }\n" +
+            "        }";
 }
