@@ -19,8 +19,9 @@ public class WriteAspectFile {
     private PsiMethod psiMethodPoint;//需要添加注解的类的方法
     private String annotationName;//注解类的名称
     private List<CheckPointBean> list;//参数；
+    private String noteName;//对应Note类名称
 
-    public WriteAspectFile(Project project, Editor editor, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
+    public WriteAspectFile(Project project, Editor editor, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list, String noteName) {
         this.project = project;
         this.editor = editor;
         this.psiClass = psiClass;
@@ -29,6 +30,7 @@ public class WriteAspectFile {
         this.psiMethodPoint = psiMethodPoint;
         this.annotationName = annotationName;
         this.list = list;
+        this.noteName = noteName;
     }
 
     public void run() {
@@ -89,7 +91,7 @@ public class WriteAspectFile {
     }
 
     private void writeMethod(CheckPointBean item, PsiClass psiClassSensors, String format) {
-        String AnnotationName = psiClass.getName().replace("Aspect", "") + "Note$Sensors$" + annotationName;
+        String AnnotationName = noteName + "$Sensors$" + annotationName;
         String methodName = formatNamedD(annotationName);
         StringBuilder checkedStr = new StringBuilder();
         StringBuilder values = new StringBuilder();

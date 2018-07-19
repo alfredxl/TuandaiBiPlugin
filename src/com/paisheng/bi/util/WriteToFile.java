@@ -34,13 +34,13 @@ public class WriteToFile {
     }
 
     private static void toWrite(Project project, Editor editor, PsiClass[] psiClassesList, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
-        writeAspect(project, editor, psiClassesList[0], psiClassPoint, psiMethodPoint, annotationName, list);
+        writeAspect(project, editor, psiClassesList[0], psiClassPoint, psiMethodPoint, annotationName, list, psiClassesList[1].getName());
         writeNote(project, editor, psiClassesList[1], psiClassPoint, psiMethodPoint, annotationName, list);
     }
 
     private static void writeAspect(Project project, Editor editor, PsiClass psiClass, PsiClass psiClassPoint,
-                                    PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
-        new WriteAspectFile(project, editor, psiClass, psiClassPoint, psiMethodPoint, annotationName, list).run();
+                                    PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list, String noteName) {
+        new WriteAspectFile(project, editor, psiClass, psiClassPoint, psiMethodPoint, annotationName, list, noteName).run();
     }
 
     private static void writeNote(Project project, Editor editor, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
@@ -59,12 +59,14 @@ public class WriteToFile {
                 // 获取biPsiDirectory
                 PsiDirectory biPsiDirectory = PsiManager.getInstance(project).findDirectory(virtualFileDirectory);
                 if (biPsiDirectory != null) {
-                    // 获取类名
+                    // 查找该目录下是否有Aspect和Note文件
+                    PsiFile[] psiFiles = getAspectAndNote(biPsiDirectory);
+                    // 获取要定义的类名
                     String[] classNames = getFormatName(ModuleName.replaceAll("[Bb]iz_", ""));
                     // 定义PsiClass数组
                     PsiClass[] PsiClassArray = new PsiClass[2];
                     // 查找PsiFile
-                    PsiFile psiFile1 = biPsiDirectory.findFile(classNames[0]);
+                    PsiFile psiFile1 = psiFiles[0];
                     if (psiFile1 instanceof PsiJavaFile && ((PsiJavaFile) psiFile1).getClasses().length > 0) {
                         // 赋值
                         PsiClassArray[0] = ((PsiJavaFile) psiFile1).getClasses()[0];
@@ -76,7 +78,7 @@ public class WriteToFile {
 //                        PsiClassArray[0] = ((PsiJavaFile) PsiManager.getInstance(project).findFile(virtualFile)).getClasses()[0];
                     }
                     //  查找PsiFile
-                    PsiFile psiFile2 = biPsiDirectory.findFile(classNames[1]);
+                    PsiFile psiFile2 = psiFiles[1];
                     if (psiFile2 instanceof PsiJavaFile && ((PsiJavaFile) psiFile2).getClasses().length > 0) {
                         // 赋值
                         PsiClassArray[1] = ((PsiJavaFile) psiFile2).getClasses()[0];
@@ -95,6 +97,21 @@ public class WriteToFile {
             }
         }
         return null;
+    }
+
+    private static PsiFile[] getAspectAndNote(PsiDirectory biPsiDirectory) {
+        PsiFile[] values = new PsiFile[2];
+        for (PsiFile item : biPsiDirectory.getFiles()) {
+            String name = item.getName();
+            if (name.startsWith("Bi") && name.endsWith("Aspect")) {
+                values[0] = item;
+                continue;
+            }
+            if (name.startsWith("Bi") && name.endsWith("Note")) {
+                values[1] = item;
+            }
+        }
+        return values;
     }
 
     private static String[] getFormatName(String className) {
