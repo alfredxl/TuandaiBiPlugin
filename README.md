@@ -1,7 +1,7 @@
 # TuandaiPlugin
 
 ## 演示
-Bi自动生成
+Bi代码自动生成
 ![演示](示例.gif)
 
 ## 说明
