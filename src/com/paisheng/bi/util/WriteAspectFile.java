@@ -67,38 +67,41 @@ public class WriteAspectFile {
     }
 
     private void sensors(CheckPointBean item) {
-        PsiClass psiClassSensors = psiClass.findInnerClassByName("Sensors", true);
+        String tag = "Sensors";
+        PsiClass psiClassSensors = psiClass.findInnerClassByName(tag, true);
         boolean isWillBeAdd = false;
         if (psiClassSensors == null) {
             psiClassSensors = psiElementFactory.createClassFromText(constant.SENSORS_ASPECT, null).getInnerClasses()[0];
             isWillBeAdd = true;
         }
-        writeMethod(item, psiClassSensors, constant.ASPECT_SENSORS_METHOD, isWillBeAdd);
+        writeMethod(item, tag, psiClassSensors, constant.ASPECT_SENSORS_METHOD, isWillBeAdd);
     }
 
 
     private void um(CheckPointBean item) {
-        PsiClass psiClassUm = psiClass.findInnerClassByName("Um", true);
+        String tag = "Um";
+        PsiClass psiClassUm = psiClass.findInnerClassByName(tag, true);
         boolean isWillBeAdd = false;
         if (psiClassUm == null) {
             psiClassUm = psiElementFactory.createClassFromText(constant.UM_ASPECT, null).getInnerClasses()[0];
             isWillBeAdd = true;
         }
-        writeMethod(item, psiClassUm, constant.ASPECT_UM_METHOD, isWillBeAdd);
+        writeMethod(item, tag, psiClassUm, constant.ASPECT_UM_METHOD, isWillBeAdd);
     }
 
     private void local(CheckPointBean item) {
-        PsiClass psiClassLocal = psiClass.findInnerClassByName("Local", true);
+        String tag = "Local";
+        PsiClass psiClassLocal = psiClass.findInnerClassByName(tag, true);
         boolean isWillBeAdd = false;
         if (psiClassLocal == null) {
             psiClassLocal = psiElementFactory.createClassFromText(constant.LOCAL_ASPECT, null).getInnerClasses()[0];
             isWillBeAdd = true;
         }
-        writeMethod(item, psiClassLocal, constant.ASPECT_LOCAL_METHOD, isWillBeAdd);
+        writeMethod(item, tag, psiClassLocal, constant.ASPECT_LOCAL_METHOD, isWillBeAdd);
     }
 
-    private void writeMethod(CheckPointBean item, PsiClass psiClassParent, String format, boolean isWillBeAdd) {
-        String AnnotationName = noteName + "$Sensors$" + annotationName;
+    private void writeMethod(CheckPointBean item, String tag, PsiClass psiClassParent, String format, boolean isWillBeAdd) {
+        String AnnotationName = noteName + "$" + tag + "$" + annotationName;
         String methodName = formatNamedD(annotationName);
         StringBuilder checkedStr = new StringBuilder();
         StringBuilder values = new StringBuilder();
