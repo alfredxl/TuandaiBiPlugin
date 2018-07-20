@@ -13,13 +13,16 @@ import com.paisheng.bi.dialog.CheckMethodDialog;
 import com.paisheng.bi.dialog.CheckPointType;
 import com.paisheng.bi.util.PsiMethodUtil;
 import com.paisheng.bi.util.WriteToFile;
+
 import java.util.List;
 
 
 public class TuandaiBiPlugin extends AnAction {
+    private boolean isWriting = false;
 
     @Override
     public void actionPerformed(final AnActionEvent e) {
+        isWriting = false;
         Project project = e.getProject();
         if (project != null) {
             Editor editor = e.getData(PlatformDataKeys.EDITOR);
@@ -42,33 +45,29 @@ public class TuandaiBiPlugin extends AnAction {
                             public void checked(int position, String value) {
                                 final PsiMethod selectMethod = psiMethods[position];
                                 CheckPointType.show(psiClass, selectMethod, new CheckPointType.CheckPointListener() {
-                                    public void checked(String className, List<CheckPointBean> list) {
-                                        WriteToFile.write(e, psiClass, selectMethod, className, list);
+                                    public void checked(String className, List<CheckPointBean> list, String description) {
+                                        if (!isWriting) {
+                                            isWriting = true;
+                                            WriteToFile.write(e, psiClass, selectMethod, className, list, description);
+                                        }
                                     }
                                 });
                             }
                         });
                     } else {
                         CheckPointType.show(psiClass, psiMethods[0], new CheckPointType.CheckPointListener() {
-                            public void checked(String className, List<CheckPointBean> list) {
-                                WriteToFile.write(e, psiClass, psiMethods[0], className, list);
+                            public void checked(String className, List<CheckPointBean> list, String description) {
+                                if (!isWriting) {
+                                    isWriting = true;
+                                    WriteToFile.write(e, psiClass, psiMethods[0], className, list, description);
+                                }
                             }
                         });
-                    } }
+                    }
+                }
             }
         }
     }
-
-    @Override
-    public void update(AnActionEvent e) {
-        Editor editor = e.getData(PlatformDataKeys.EDITOR);
-        if (editor != null) {
-            e.getPresentation().setEnabled(true);
-        } else {
-            e.getPresentation().setEnabled(false);
-        }
-    }
-
 //    private PsiDirectory getSrcDirectory(PsiDirectory psiDirectory) {
 //        if (!psiDirectory.getName().equals("src")) {
 //            return getSrcDirectory(psiDirectory.getParentDirectory());

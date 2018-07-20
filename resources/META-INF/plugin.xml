@@ -1,10 +1,10 @@
 <idea-plugin>
-  <id>com.alfredxl.tuandai.bid</id>
-  <name>com.paisheng.bi.TuandaiBiPlugin</name>
-  <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <id>com.alfredxl.tuandai</id>
+  <name>TuandaiPlugin</name>
+  <version>1.0.0</version>
+  <vendor email="765947965@qq.com" url="https://github.com/alfredxl">团贷网</vendor>
 
-  <description>团贷Bi代码自动生成插件</description>
+  <description>团贷网安卓IDEA相关插件，目前有提供Bi代码自动生成插件</description>
 
   <change-notes>
   </change-notes>
@@ -14,9 +14,7 @@
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
        on how to target different products -->
-  <!-- uncomment to enable plugin in all products
   <depends>com.intellij.modules.lang</depends>
-  -->
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
