@@ -1,10 +1,7 @@
 package com.paisheng.bi.dialog;
 
 import com.intellij.lang.jvm.JvmParameter;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
+import com.intellij.psi.*;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.panels.HorizontalLayout;
@@ -31,11 +28,21 @@ public class CheckPointType {
         jPanelMain.setBorder(JBUI.Borders.empty(10));
         jFrame.setContentPane(jPanelMain);
 
+        JPanel jPanelClassBox = new JPanel(new VerticalLayout(5));
+        jPanelClassBox.setBorder(BorderFactory.createEtchedBorder());
         JPanel jPanelClassName = new JPanel(new HorizontalLayout(5));
         jPanelClassName.add(new JLabel("注解类名称"));
         final JTextField textFieldClassNme = new JTextField(getClassName(psiClass, psiMethod));
         jPanelClassName.add(textFieldClassNme);
-        jPanelMain.add(jPanelClassName);
+        jPanelClassBox.add(jPanelClassName);
+
+        JPanel jPanelClassDescription = new JPanel(new HorizontalLayout(5));
+        jPanelClassDescription.add(new JLabel("注解类描述"));
+        final JTextField textFieldClassDescription = new JTextField();
+        textFieldClassDescription.setMinimumSize(new Dimension(600, textFieldClassDescription.getHeight()));
+        jPanelClassDescription.add(textFieldClassDescription);
+        jPanelClassBox.add(jPanelClassDescription);
+        jPanelMain.add(jPanelClassBox);
 
         JPanel jPanelPointType = new JPanel(new HorizontalLayout(5));
         JPanel jPanelSensors = new JPanel(new VerticalLayout(5));
@@ -57,29 +64,45 @@ public class CheckPointType {
         final List<JCheckBox> ListCheckBoxesSensors = new ArrayList<JCheckBox>();
         JPanel jPanelParameterRootSensors = new JPanel(new VerticalLayout(5));
         jPanelParameterRootSensors.setBorder(BorderFactory.createTitledBorder("参数"));
-        jPanelParameterRootSensors.add(new JCheckBox(psiClass.getName() + " this", true));
         jPanelSensors.add(jPanelParameterRootSensors);
-        // 选择框（类的对象本身）
-        ListCheckBoxesSensors.add((JCheckBox) jPanelParameterRootSensors.getComponent(0));
+        // 是私有类
+        boolean isHasPrivate = psiClass.getModifierList() != null && psiClass.getModifierList().hasModifierProperty(PsiKeyword.PRIVATE);
+        // 是内部类
+        boolean isHasNotName = psiClass.getName() == null || psiClass.getName().length() == 0;
+        // 不能有this参数选项
+        boolean isNotThis = isHasPrivate || isHasNotName;
+        if (isNotThis) {
+            ListCheckBoxesSensors.add(new JCheckBox("", false));
+        } else {
+            jPanelParameterRootSensors.add(new JCheckBox(psiClass.getName() + " this", true));
+            ListCheckBoxesSensors.add((JCheckBox) jPanelParameterRootSensors.getComponent(0));
+        }
 
         final JCheckBox jCheckBoxUm = new JCheckBox("友盟");
         jPanelUm.add(jCheckBoxUm);
         final List<JCheckBox> ListCheckBoxesUm = new ArrayList<JCheckBox>();
         JPanel jPanelParameterRootUm = new JPanel(new VerticalLayout(5));
         jPanelParameterRootUm.setBorder(BorderFactory.createTitledBorder("参数"));
-        jPanelParameterRootUm.add(new JCheckBox(psiClass.getName() + " this", true));
         jPanelUm.add(jPanelParameterRootUm);
-        ListCheckBoxesUm.add((JCheckBox) jPanelParameterRootUm.getComponent(0));
+        if (isNotThis) {
+            ListCheckBoxesUm.add(new JCheckBox("", false));
+        } else {
+            jPanelParameterRootUm.add(new JCheckBox(psiClass.getName() + " this", true));
+            ListCheckBoxesUm.add((JCheckBox) jPanelParameterRootUm.getComponent(0));
+        }
 
         final JCheckBox jCheckBoxLocal = new JCheckBox("本地");
         jPanelLocal.add(jCheckBoxLocal);
         final List<JCheckBox> ListCheckBoxesLocal = new ArrayList<JCheckBox>();
         JPanel jPanelParameterRootLocal = new JPanel(new VerticalLayout(5));
         jPanelParameterRootLocal.setBorder(BorderFactory.createTitledBorder("参数"));
-        jPanelParameterRootLocal.add(new JCheckBox(psiClass.getName() + " this", true));
         jPanelLocal.add(jPanelParameterRootLocal);
-        ListCheckBoxesLocal.add((JCheckBox) jPanelParameterRootLocal.getComponent(0));
-
+        if (isNotThis) {
+            ListCheckBoxesLocal.add(new JCheckBox("", false));
+        } else {
+            jPanelParameterRootLocal.add(new JCheckBox(psiClass.getName() + " this", true));
+            ListCheckBoxesLocal.add((JCheckBox) jPanelParameterRootLocal.getComponent(0));
+        }
 
         for (int i = 0; i < parameters.size(); i++) {
             String parameter = parameters.get(i);
@@ -115,9 +138,15 @@ public class CheckPointType {
         jPanelMain.add(bottomJPanel);
         jButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                String description = textFieldClassDescription.getText();
+                if (description == null || description.length() == 0) {
+                    jLabelTips.setText("请输入注解类的注释描述");
+                    return;
+                }
                 if (!jCheckBoxSensors.isSelected() && !jCheckBoxUm.isSelected() && !jCheckBoxLocal.isSelected()) {
                     jLabelTips.setText("请至少选择一种Bi统计方式");
                 } else {
+                    jLabelTips.setText("");
                     List<CheckPointBean> list = new ArrayList<CheckPointBean>();
                     if (jCheckBoxSensors.isSelected()) {
                         list.add(initData(1, ListCheckBoxesSensors));
@@ -129,7 +158,7 @@ public class CheckPointType {
                         list.add(initData(3, ListCheckBoxesLocal));
                     }
                     if (listener != null) {
-                        listener.checked(textFieldClassNme.getText(), list);
+                        listener.checked(textFieldClassNme.getText(), list, description);
                     }
                     jFrame.dispose();
                 }
@@ -200,6 +229,6 @@ public class CheckPointType {
     }
 
     public interface CheckPointListener {
-        void checked(String className, List<CheckPointBean> list);
+        void checked(String className, List<CheckPointBean> list, String description);
     }
 }

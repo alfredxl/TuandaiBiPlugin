@@ -82,7 +82,8 @@ public class constant {
             "            }\n" +
             "        }";
 
-    public static final String ASPECT_ANOTE = "@Target({ElementType.METHOD})\n" +
+    public static final String ASPECT_ANOTE = "/*** %s ***/\n" +
+            "        @Target({ElementType.METHOD})\n" +
             "        @Retention(RetentionPolicy.CLASS)\n" +
             "        @interface %s {\n" +
             "        }";

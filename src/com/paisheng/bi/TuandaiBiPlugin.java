@@ -45,10 +45,10 @@ public class TuandaiBiPlugin extends AnAction {
                             public void checked(int position, String value) {
                                 final PsiMethod selectMethod = psiMethods[position];
                                 CheckPointType.show(psiClass, selectMethod, new CheckPointType.CheckPointListener() {
-                                    public void checked(String className, List<CheckPointBean> list) {
+                                    public void checked(String className, List<CheckPointBean> list, String description) {
                                         if (!isWriting) {
                                             isWriting = true;
-                                            WriteToFile.write(e, psiClass, selectMethod, className, list);
+                                            WriteToFile.write(e, psiClass, selectMethod, className, list, description);
                                         }
                                     }
                                 });
@@ -56,10 +56,10 @@ public class TuandaiBiPlugin extends AnAction {
                         });
                     } else {
                         CheckPointType.show(psiClass, psiMethods[0], new CheckPointType.CheckPointListener() {
-                            public void checked(String className, List<CheckPointBean> list) {
+                            public void checked(String className, List<CheckPointBean> list, String description) {
                                 if (!isWriting) {
                                     isWriting = true;
-                                    WriteToFile.write(e, psiClass, psiMethods[0], className, list);
+                                    WriteToFile.write(e, psiClass, psiMethods[0], className, list, description);
                                 }
                             }
                         });

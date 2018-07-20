@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.paisheng.bi.bean.CheckPointBean;
@@ -13,23 +14,34 @@ import java.io.IOException;
 import java.util.List;
 
 public class WriteToFile {
-    public static void write(final AnActionEvent e, final PsiClass psiClass, final PsiMethod selectMethod, final String className, final List<CheckPointBean> list) {
+    public static void write(final AnActionEvent e, final PsiClass psiClass, final PsiMethod selectMethod, final String className,
+                             final List<CheckPointBean> list, final String description) {
         final Project project = e.getProject();
         WriteCommandAction.runWriteCommandAction(project, new Runnable() {
             public void run() {
-                // 创建文件系统
-                PsiClass[] virtualFiles = createFile(e);
-                // 写文件
-                if (virtualFiles != null) {
-                    toWrite(project, virtualFiles, psiClass, selectMethod, className, list);
+                try {
+                    // 创建文件系统
+                    PsiClass[] virtualFiles = createFile(e);
+                    // 写文件
+                    if (virtualFiles != null) {
+                        toWrite(project, virtualFiles, psiClass, selectMethod, className, list, description);
+                    }
+                } catch (Exception e) {
+                    try {
+                        Messages.showInfoMessage(e.getMessage(), "错误提示");
+                    } catch (Exception el) {
+                        el.printStackTrace();
+                    }
                 }
             }
         });
     }
 
-    private static void toWrite(final Project project, final PsiClass[] psiClassesList, final PsiClass psiClassPoint, final PsiMethod psiMethodPoint, final String annotationName, final List<CheckPointBean> list) {
+    private static void toWrite(final Project project, final PsiClass[] psiClassesList, final PsiClass psiClassPoint,
+                                final PsiMethod psiMethodPoint, final String annotationName, final List<CheckPointBean> list,
+                                String description) {
+        writeNote(project, psiClassesList[1], psiClassPoint, psiMethodPoint, annotationName, list, description);
         writeAspect(project, psiClassesList[0], psiClassPoint, psiMethodPoint, annotationName, list, psiClassesList[1].getName());
-        writeNote(project, psiClassesList[1], psiClassPoint, psiMethodPoint, annotationName, list);
         writePoint(project, psiClassesList[1], psiClassPoint, psiMethodPoint, annotationName, list);
     }
 
@@ -38,8 +50,9 @@ public class WriteToFile {
         new WriteAspectFile(project, psiClass, psiClassPoint, psiMethodPoint, annotationName, list, noteName).run();
     }
 
-    private static void writeNote(Project project, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
-        new WriteNoteFile(project, psiClass, psiClassPoint, psiMethodPoint, annotationName, list).run();
+    private static void writeNote(Project project, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName,
+                                  List<CheckPointBean> list, String description) {
+        new WriteNoteFile(project, psiClass, psiClassPoint, psiMethodPoint, annotationName, list, description).run();
     }
 
     private static void writePoint(Project project, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {

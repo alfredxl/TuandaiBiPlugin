@@ -2,7 +2,6 @@ package com.paisheng.bi.util;
 
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 import com.paisheng.bi.bean.CheckPointBean;
 import com.paisheng.bi.constant;
@@ -17,8 +16,10 @@ public class WriteNoteFile {
     private PsiMethod psiMethodPoint;//需要添加注解的类的方法
     private String annotationName;//注解类的名称
     private List<CheckPointBean> list;//参数；
+    private String classDescription; //注解类的描述
 
-    public WriteNoteFile(Project project, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list) {
+    public WriteNoteFile(Project project, PsiClass psiClass, PsiClass psiClassPoint, PsiMethod psiMethodPoint, String annotationName, List<CheckPointBean> list,
+                         String classDescription) {
         this.project = project;
         this.psiClass = psiClass;
         psiElementFactory = JavaPsiFacade.getElementFactory(project);
@@ -26,24 +27,21 @@ public class WriteNoteFile {
         this.psiMethodPoint = psiMethodPoint;
         this.annotationName = annotationName;
         this.list = list;
+        this.classDescription = classDescription;
     }
 
     public void run() {
-        try {
-            start();
-            for (CheckPointBean item : list) {
-                if (item.getPointType() == 1) {
-                    sensors(item);
-                } else if (item.getPointType() == 2) {
-                    um(item);
-                } else if (item.getPointType() == 3) {
-                    local(item);
-                }
+        start();
+        for (CheckPointBean item : list) {
+            if (item.getPointType() == 1) {
+                sensors(item);
+            } else if (item.getPointType() == 2) {
+                um(item);
+            } else if (item.getPointType() == 3) {
+                local(item);
             }
-            openFiles(project, psiClass);
-        } catch (Exception e) {
-            Messages.showInfoMessage(e.toString(), "错误");
         }
+        openFiles(project, psiClass);
     }
 
     private void openFiles(Project project, PsiClass... psiClasses) {
@@ -69,7 +67,7 @@ public class WriteNoteFile {
         PsiClass psiClassSensors = psiClass.findInnerClassByName("Sensors", true);
         boolean isWillBeAdd = false;
         if (psiClassSensors == null) {
-            String str = String.format(constant.ASPECT_ANOTE, "Sensors");
+            String str = String.format(constant.ASPECT_ANOTE, "神测注解类", "Sensors");
             psiClassSensors = psiElementFactory.createClassFromText(str, null).getInnerClasses()[0];
             isWillBeAdd = true;
         }
@@ -82,7 +80,7 @@ public class WriteNoteFile {
         PsiClass psiClassUm = psiClass.findInnerClassByName("Um", true);
         boolean isWillBeAdd = false;
         if (psiClassUm == null) {
-            String str = String.format(constant.ASPECT_ANOTE, "Um");
+            String str = String.format(constant.ASPECT_ANOTE, "友盟注解类", "Um");
             psiClassUm = psiElementFactory.createClassFromText(str, null).getInnerClasses()[0];
             isWillBeAdd = true;
         }
@@ -94,7 +92,7 @@ public class WriteNoteFile {
         PsiClass psiClassLocal = psiClass.findInnerClassByName("Local", true);
         boolean isWillBeAdd = false;
         if (psiClassLocal == null) {
-            String str = String.format(constant.ASPECT_ANOTE, "Local");
+            String str = String.format(constant.ASPECT_ANOTE, "本地注解类", "Local");
             psiClassLocal = psiElementFactory.createClassFromText(str, null).getInnerClasses()[0];
             isWillBeAdd = true;
         }
@@ -105,9 +103,11 @@ public class WriteNoteFile {
     private void toAddSubA(PsiClass psiClassParent, boolean isWillBeAdd) {
         PsiClass psiClassSub = psiClassParent.findInnerClassByName(annotationName, true);
         if (psiClassSub == null) {
-            String str = String.format(constant.ASPECT_ANOTE, annotationName);
+            String str = String.format(constant.ASPECT_ANOTE, classDescription, annotationName);
             psiClassSub = psiElementFactory.createClassFromText(str, null).getInnerClasses()[0];
             psiClassParent.add(psiClassSub);
+        } else {
+            throw new RuntimeException(psiClassParent.getName() + "类中，注解类" + annotationName + "已存在");
         }
         if (isWillBeAdd) {
             psiClass.add(psiClassParent);
