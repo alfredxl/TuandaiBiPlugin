@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.alfredxl.tuandai</id>
   <name>TuandaiPlugin</name>
-  <version>1.0</version>
+  <version>1.0.0</version>
   <vendor email="765947965@qq.com" url="https://github.com/alfredxl">团贷网</vendor>
 
   <description>团贷网安卓IDEA相关插件，目前有提供Bi代码自动生成插件</description>
