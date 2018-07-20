@@ -30,16 +30,15 @@ public class CheckPointType {
 
         JPanel jPanelClassBox = new JPanel(new VerticalLayout(5));
         jPanelClassBox.setBorder(BorderFactory.createEtchedBorder());
-        JPanel jPanelClassName = new JPanel(new HorizontalLayout(5));
+        JPanel jPanelClassName = new JPanel(new FlowLayout(5));
         jPanelClassName.add(new JLabel("注解类名称"));
-        final JTextField textFieldClassNme = new JTextField(getClassName(psiClass, psiMethod));
+        final JTextField textFieldClassNme = new JTextField(getClassName(psiClass, psiMethod), 30);
         jPanelClassName.add(textFieldClassNme);
         jPanelClassBox.add(jPanelClassName);
 
-        JPanel jPanelClassDescription = new JPanel(new HorizontalLayout(5));
+        JPanel jPanelClassDescription = new JPanel(new FlowLayout(5));
         jPanelClassDescription.add(new JLabel("注解类描述"));
-        final JTextField textFieldClassDescription = new JTextField();
-        textFieldClassDescription.setMinimumSize(new Dimension(600, textFieldClassDescription.getHeight()));
+        final JTextField textFieldClassDescription = new JTextField(30);
         jPanelClassDescription.add(textFieldClassDescription);
         jPanelClassBox.add(jPanelClassDescription);
         jPanelMain.add(jPanelClassBox);
