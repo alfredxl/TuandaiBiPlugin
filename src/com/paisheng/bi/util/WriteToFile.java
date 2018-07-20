@@ -26,12 +26,8 @@ public class WriteToFile {
                     if (virtualFiles != null) {
                         toWrite(project, virtualFiles, psiClass, selectMethod, className, list, description);
                     }
-                } catch (Exception e) {
-                    try {
-                        Messages.showInfoMessage(e.getMessage(), "错误提示");
-                    } catch (Exception el) {
-                        el.printStackTrace();
-                    }
+                } catch (final Exception e) {
+                    System.out.println(e.getMessage());
                 }
             }
         });
