@@ -97,7 +97,6 @@ public class WriteToFile {
 //                        ProjectHelper.setFileContent(project, virtualFile, String.format(constant.NOTE, classNames[1].replace(".java", "")));
 //                        PsiClassArray[1] = ((PsiJavaFile) PsiManager.getInstance(project).findFile(virtualFile)).getClasses()[0];
                     }
-                    // 加入编辑器
                     return PsiClassArray;
                 }
             } catch (IOException e1) {
