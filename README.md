@@ -105,7 +105,7 @@ WriteCommandAction.runWriteCommandAction(project, new Runnable() {
             }
         });
 ```  
-这里需要注意的就是文件的生成在IDEA中需要放在异步线程;    
+需要注意的就是文件的生成在IDEA中需要放在异步线程;    
 >Java文件的创建可以通过多种方式，比如VirtualFile、JavaDirectoryService(本例采用JavaDirectoryService) 
 [关于PSI文件介绍](https://www.jianshu.com/p/3666aca52bfa)          
 ```java
