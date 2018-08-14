@@ -44,6 +44,7 @@ Bi代码自动生成
 a、选中需要切入Bi的方法，获取选中方法的名称；   
 b、根据名称生成相应的注解，并在选中方法上添加该注解；   
 c、针对注解，生成符合Aspectj的注入代码；  
+d、由于生成的代码是关于Aspect的，所以有兴趣可以了解下:[Aspectj](https://github.com/alfredxl/AspectjDemo)
 类图如下：  
 
 ![类图](image/20180813174957.png)
