@@ -38,7 +38,7 @@ Bi代码自动生成
 
 ![说明](image/20180814095242.png)     
 
-附：![菜单目录](http://keithlea.com/idea-actions/)
+附：[菜单目录](http://keithlea.com/idea-actions/)
 
 4、开始编写代码，这里以BI代码自动生成为案例，需求如下:       
 a、选中需要切入Bi的方法，获取选中方法的名称；   
@@ -48,7 +48,7 @@ c、针对注解，生成符合Aspectj的注入代码；
 
 ![类图](image/20180813174957.png)
  
-下面展示主要代码：![官方文档](http://www.jetbrains.org/intellij/sdk/docs/welcome.html)，![论坛](https://intellij-support.jetbrains.com/hc/en-us/community/topics/200366979-IntelliJ-IDEA-Open-API-and-Plugin-Development)     
+下面展示主要代码：[官方文档](http://www.jetbrains.org/intellij/sdk/docs/welcome.html)，[论坛](https://intellij-support.jetbrains.com/hc/en-us/community/topics/200366979-IntelliJ-IDEA-Open-API-and-Plugin-Development)     
 >定义TuandaiBiPlugin继承AnAction    
 ```java
 public class TuandaiBiPlugin extends AnAction {
@@ -107,7 +107,7 @@ WriteCommandAction.runWriteCommandAction(project, new Runnable() {
 ```  
 这里需要注意的就是文件的生成在IDEA中需要放在异步线程;    
 >Java文件的创建可以通过多种方式，比如VirtualFile、JavaDirectoryService(本例采用JavaDirectoryService) 
-![关于PSI文件介绍](https://www.jianshu.com/p/3666aca52bfa)          
+[关于PSI文件介绍](https://www.jianshu.com/p/3666aca52bfa)          
 ```java
 private static PsiClass[] createFile(AnActionEvent e) {
         Project project = e.getProject();
