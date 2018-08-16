@@ -49,7 +49,7 @@ d、由于生成的代码是关于Aspect的，所以有兴趣可以了解下:[As
 
 ![类图](image/20180813174957.png)
  
-下面展示主要代码：[官方文档](http://www.jetbrains.org/intellij/sdk/docs/welcome.html)，[论坛](https://intellij-support.jetbrains.com/hc/en-us/community/topics/200366979-IntelliJ-IDEA-Open-API-and-Plugin-Development)     
+下面展示主要代码：[官方文档](http://www.jetbrains.org/intellij/sdk/docs/welcome.html)，[论坛](https://intellij-support.jetbrains.com/hc/en-us/community/topics/200366979-IntelliJ-IDEA-Open-API-and-Plugin-Development), [第三方API教程](https://juejin.im/post/599f7f546fb9a0248c2de496)          
 >定义TuandaiBiPlugin继承AnAction    
 ```java
 public class TuandaiBiPlugin extends AnAction {
