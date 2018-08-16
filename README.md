@@ -38,7 +38,7 @@ Bi代码自动生成
 
 ![说明](image/20180814095242.png)     
 
-附：[菜单目录](http://keithlea.com/idea-actions/)
+附：[Actions目录](http://keithlea.com/idea-actions/)
 
 4、开始编写代码，这里以BI代码自动生成为案例，需求如下:       
 a、选中需要切入Bi的方法，获取选中方法的名称；   
