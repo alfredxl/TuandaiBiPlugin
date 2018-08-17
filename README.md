@@ -38,7 +38,7 @@ Bi代码自动生成
 
 ![说明](image/20180814095242.png)     
 
-附：[菜单目录](http://keithlea.com/idea-actions/)
+附：[Actions目录](http://keithlea.com/idea-actions/)
 
 4、开始编写代码，这里以BI代码自动生成为案例，需求如下:       
 a、选中需要切入Bi的方法，获取选中方法的名称；   
@@ -49,7 +49,7 @@ d、由于生成的代码是关于Aspect的，所以有兴趣可以了解下:[As
 
 ![类图](image/20180813174957.png)
  
-下面展示主要代码：[官方文档](http://www.jetbrains.org/intellij/sdk/docs/welcome.html)，[论坛](https://intellij-support.jetbrains.com/hc/en-us/community/topics/200366979-IntelliJ-IDEA-Open-API-and-Plugin-Development)     
+下面展示主要代码：[官方文档](http://www.jetbrains.org/intellij/sdk/docs/welcome.html)，[论坛](https://intellij-support.jetbrains.com/hc/en-us/community/topics/200366979-IntelliJ-IDEA-Open-API-and-Plugin-Development), [第三方API教程](https://juejin.im/post/599f7f546fb9a0248c2de496)          
 >定义TuandaiBiPlugin继承AnAction    
 ```java
 public class TuandaiBiPlugin extends AnAction {
