@@ -1,14 +1,10 @@
 <idea-plugin>
     <id>com.alfredxl.tuandai</id>
-    <name>TuandaiPlugin</name>
+    <name>TuandaiBI</name>
     <version>1.0.0</version>
     <vendor email="765947965@qq.com" url="https://github.com/alfredxl/TuandaiBiPlugin">No Company</vendor>
 
     <description><![CDATA[
-    自动Aspectj代码生成：<br />
-    1、根据用户选中方法，生成相应注解类、Aspectj类；<br />
-    2、在用户选中方法上自动添加响应注解；<br />
-    <hr />
     Automatic Aspectj code generation: <br / >
     1, according to the user selected method, generate the corresponding annotation class and Aspectj class; <br / >
     2, automatically add response notes on the user selected method; <br / >
