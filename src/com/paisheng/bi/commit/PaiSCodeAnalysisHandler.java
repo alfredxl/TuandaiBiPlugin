@@ -164,19 +164,22 @@ class PaiSCodeAnalysisHandler extends CheckinHandler {
         boolean isSampleMethod = true;
         if (annotationsBefore != null) {
             for (AnnotationExpr beforeItem : annotationsBefore) {
-                // 定义单个注解
-                boolean singleHasSampleAnnotation = false;
-                if (annotationsAfter != null) {
-                    for (AnnotationExpr afterItem : annotationsAfter) {
-                        if (beforeItem.getName().equals(afterItem.getName())) {
-                            singleHasSampleAnnotation = true;
-                            break;
+                // 只对Bi注解进行检测
+                if (beforeItem.getName().toString().matches(BiMethodDeclaration.NAME_REGEX)) {
+                    // 定义单个注解
+                    boolean singleHasSampleAnnotation = false;
+                    if (annotationsAfter != null) {
+                        for (AnnotationExpr afterItem : annotationsAfter) {
+                            if (beforeItem.getName().equals(afterItem.getName())) {
+                                singleHasSampleAnnotation = true;
+                                break;
+                            }
                         }
                     }
-                }
-                if (!singleHasSampleAnnotation) {
-                    isSampleMethod = false;
-                    break;
+                    if (!singleHasSampleAnnotation) {
+                        isSampleMethod = false;
+                        break;
+                    }
                 }
             }
             // 注解相同，检测参数
