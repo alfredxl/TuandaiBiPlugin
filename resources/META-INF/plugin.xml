@@ -21,9 +21,13 @@
     <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <checkinHandlerFactory implementation="com.paisheng.bi.commit.PaiSCodeAnalysisFactory" order="first"/>
     </extensions>
-
+    <project-components>
+        <component>
+            <implementation-class>com.paisheng.bi.file.FileChange</implementation-class>
+        </component>
+    </project-components>
     <actions>
         <!-- Add your actions here -->
         <action id="com.paisheng.bi.TuandaiBiPlugin" class="com.paisheng.bi.TuandaiBiPlugin" text="团贷Bi"
