@@ -25,14 +25,12 @@ import java.util.*;
 class PaiSCodeAnalysisHandler extends CheckinHandler {
     private final JCheckBox checkBox = new NonFocusableCheckBox("Tuandai Bi Code Check");
     private CheckinProjectPanel checkinProjectPanel;
-    private CommitContext commitContext;
     private List<BiClassMethod> allBiList = new ArrayList<BiClassMethod>();
     private List<BiClassMethod> problemBiList = new ArrayList<BiClassMethod>();
 
 
-    PaiSCodeAnalysisHandler(CheckinProjectPanel checkinProjectPanel, CommitContext commitContext) {
+    PaiSCodeAnalysisHandler(CheckinProjectPanel checkinProjectPanel) {
         this.checkinProjectPanel = checkinProjectPanel;
-        this.commitContext = commitContext;
     }
 
     @Override

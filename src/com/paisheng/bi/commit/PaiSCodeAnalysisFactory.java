@@ -9,6 +9,6 @@ import org.jetbrains.annotations.NotNull;
 public class PaiSCodeAnalysisFactory extends CheckinHandlerFactory {
     @NotNull
     public CheckinHandler createHandler(@NotNull CheckinProjectPanel checkinProjectPanel, @NotNull CommitContext commitContext) {
-        return new PaiSCodeAnalysisHandler(checkinProjectPanel, commitContext);
+        return new PaiSCodeAnalysisHandler(checkinProjectPanel);
     }
 }
