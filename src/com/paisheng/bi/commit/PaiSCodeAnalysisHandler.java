@@ -1,10 +1,12 @@
 package com.paisheng.bi.commit;
 
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.CheckinProjectPanel;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.changes.Change;
-import com.intellij.openapi.vcs.changes.CommitContext;
 import com.intellij.openapi.vcs.changes.CommitExecutor;
 import com.intellij.openapi.vcs.changes.ContentRevision;
 import com.intellij.openapi.vcs.checkin.CheckinHandler;
@@ -17,6 +19,7 @@ import com.paisheng.bi.util.JavaParserUtils;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.Parameter;
 import japa.parser.ast.expr.AnnotationExpr;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -56,52 +59,75 @@ class PaiSCodeAnalysisHandler extends CheckinHandler {
     @Override
     public ReturnResult beforeCheckin(@Nullable CommitExecutor executor, PairConsumer<Object, Object> additionalDataConsumer) {
         if (checkBox.isSelected()) {
-            allBiList.clear();
-            problemBiList.clear();
-            for (Change item : checkinProjectPanel.getSelectedChanges()) {
-                // 只对旧有代码有的做检测
-                ContentRevision revisionBefore = item.getBeforeRevision();
-                if (revisionBefore != null && revisionBefore.getFile().getName().endsWith(".java")) {
-                    BiClassMethod biClassMethod = new BiClassMethod();
-                    ContentRevision revisionAfter = item.getAfterRevision();
-                    biClassMethod.setHasDelete(revisionAfter == null);
-                    try {
-                        if (revisionAfter != null) {
-                            biClassMethod.setVirtualFilePath(revisionAfter.getFile().getPath());
-                            biClassMethod.setAfterContent(revisionAfter.getContent());
-                        }
-                        biClassMethod.setBeforeContent(revisionBefore.getContent());
-                    } catch (VcsException e) {
-                        e.printStackTrace();
-                    }
-                    JavaParserUtils.test(biClassMethod.getBeforeContent(), biClassMethod.getBeforeMap());
-                    if (biClassMethod.getBeforeMap().size() > 0) {
-                        allBiList.add(biClassMethod);
-                        if (biClassMethod.getAfterContent() != null) {
-                            JavaParserUtils.test(biClassMethod.getAfterContent(), biClassMethod.getAfterMap());
-                        }
-                    }
-                }
-            }
-            collectProblem();
+            toDeal();
             if (problemBiList.size() > 0) {
-                StringBuilder stringBuffer = new StringBuilder();
-                stringBuffer.append("有修改的Bi注解方法:").append("\r\n");
-                for (BiClassMethod biItem : problemBiList) {
-                    for (Map.Entry<String, BiMethodDeclaration> entry : biItem.getBeforeMap().entrySet()) {
-                        BiMethodDeclaration mBiItem = entry.getValue();
-                        if (mBiItem.isChange()) {
-                            stringBuffer.append(mBiItem.getMethodDeclaration().getName()).append("\r\n");
-                        }
-                    }
+                if (Messages.showOkCancelDialog(checkinProjectPanel.getProject(), "发现Bi注解方法被改动！",
+                        "Bi方法改动检测", "查看改动", "继续提交", null) == Messages.OK) {
+                    return CheckinHandler.ReturnResult.CLOSE_WINDOW;
+                } else {
+                    return CheckinHandler.ReturnResult.COMMIT;
                 }
-                Messages.showInfoMessage(stringBuffer.toString(), "提示");
-                return CheckinHandler.ReturnResult.CANCEL;
+//                StringBuilder stringBuffer = new StringBuilder();
+//                stringBuffer.append("有修改的Bi注解方法:").append("\r\n");
+//                for (BiClassMethod biItem : problemBiList) {
+//                    for (Map.Entry<String, BiMethodDeclaration> entry : biItem.getBeforeMap().entrySet()) {
+//                        BiMethodDeclaration mBiItem = entry.getValue();
+//                        if (mBiItem.isChange()) {
+//                            stringBuffer.append(mBiItem.getMethodDeclaration().getName()).append("\r\n");
+//                        }
+//                    }
+//                }
+//                Messages.showInfoMessage(stringBuffer.toString(), "提示");
+//                return CheckinHandler.ReturnResult.CANCEL;
             } else {
                 return CheckinHandler.ReturnResult.COMMIT;
             }
         } else {
             return super.beforeCheckin(executor, additionalDataConsumer);
+        }
+    }
+
+    private void toDeal() {
+        ProgressManager.getInstance().run(new Task.Modal(checkinProjectPanel.getProject(), "检测Bi注解方法改动...", true) {
+            public void run(@NotNull ProgressIndicator progressIndicator) {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                collectMethod();
+                collectProblem();
+            }
+        });
+    }
+
+    private void collectMethod() {
+        allBiList.clear();
+        problemBiList.clear();
+        for (Change item : checkinProjectPanel.getSelectedChanges()) {
+            // 只对旧有代码有的做检测
+            ContentRevision revisionBefore = item.getBeforeRevision();
+            if (revisionBefore != null && revisionBefore.getFile().getName().endsWith(".java")) {
+                BiClassMethod biClassMethod = new BiClassMethod();
+                ContentRevision revisionAfter = item.getAfterRevision();
+                biClassMethod.setHasDelete(revisionAfter == null);
+                try {
+                    if (revisionAfter != null) {
+                        biClassMethod.setVirtualFilePath(revisionAfter.getFile().getPath());
+                        biClassMethod.setAfterContent(revisionAfter.getContent());
+                    }
+                    biClassMethod.setBeforeContent(revisionBefore.getContent());
+                } catch (VcsException e) {
+                    e.printStackTrace();
+                }
+                JavaParserUtils.test(biClassMethod.getBeforeContent(), biClassMethod.getBeforeMap());
+                if (biClassMethod.getBeforeMap().size() > 0) {
+                    allBiList.add(biClassMethod);
+                    if (biClassMethod.getAfterContent() != null) {
+                        JavaParserUtils.test(biClassMethod.getAfterContent(), biClassMethod.getAfterMap());
+                    }
+                }
+            }
         }
     }
 
