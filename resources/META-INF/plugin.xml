@@ -22,6 +22,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <checkinHandlerFactory implementation="com.paisheng.bi.commit.PaiSCodeAnalysisFactory" order="first"/>
+        <!--<toolWindow id="PaiSInspectionToolProvider" secondary="true" icon="/image/bi_icon.png" anchor="bottom"-->
+                    <!--canCloseContents="true" factoryClass="com.paisheng.bi.inspection.PaiSInspectionToolProvider"/>-->
     </extensions>
     <project-components>
         <component>

@@ -13,7 +13,7 @@ import java.io.StringReader;
 import java.util.Map;
 
 public class JavaParserUtils {
-    public static void test(String code, final Map<String, BiMethodDeclaration> map) {
+    public static void parse(String code, final Map<String, BiMethodDeclaration> map) {
         try {
             CompilationUnit compilationUnit = JavaParser.parse(new StringReader(code));
             VoidVisitorAdapter<Object> adapter = new VoidVisitorAdapter<Object>() {
