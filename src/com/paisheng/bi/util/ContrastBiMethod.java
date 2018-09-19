@@ -27,9 +27,10 @@ public class ContrastBiMethod {
                 biClassMethod.setHasDelete(revisionAfter == null);
                 try {
                     if (revisionAfter != null) {
-                        biClassMethod.setVirtualFilePath(revisionAfter.getFile().getPath());
+                        biClassMethod.setAfterVirtualFilePath(revisionAfter.getFile().getPath());
                         biClassMethod.setAfterContent(revisionAfter.getContent());
                     }
+                    biClassMethod.setBeforeVirtualFilePath(revisionBefore.getFile().getPath());
                     biClassMethod.setBeforeContent(revisionBefore.getContent());
                 } catch (VcsException e) {
                     e.printStackTrace();

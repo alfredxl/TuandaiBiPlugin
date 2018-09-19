@@ -5,7 +5,8 @@ import java.util.*;
 
 public class BiClassMethod {
     private boolean hasDelete;
-    private String virtualFilePath;
+    private String beforeVirtualFilePath;
+    private String afterVirtualFilePath;
     private String beforeContent;
     private String afterContent;
     private Map<String, BiMethodDeclaration> beforeMap = new HashMap<String, BiMethodDeclaration>();
@@ -19,12 +20,20 @@ public class BiClassMethod {
         this.hasDelete = hasDelete;
     }
 
-    public String getVirtualFilePath() {
-        return virtualFilePath;
+    public String getBeforeVirtualFilePath() {
+        return beforeVirtualFilePath;
     }
 
-    public void setVirtualFilePath(String virtualFilePath) {
-        this.virtualFilePath = virtualFilePath;
+    public void setBeforeVirtualFilePath(String beforeVirtualFilePath) {
+        this.beforeVirtualFilePath = beforeVirtualFilePath;
+    }
+
+    public String getAfterVirtualFilePath() {
+        return afterVirtualFilePath;
+    }
+
+    public void setAfterVirtualFilePath(String afterVirtualFilePath) {
+        this.afterVirtualFilePath = afterVirtualFilePath;
     }
 
     public String getBeforeContent() {
