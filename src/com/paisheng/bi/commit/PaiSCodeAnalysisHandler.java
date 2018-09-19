@@ -43,6 +43,7 @@ class PaiSCodeAnalysisHandler extends CheckinHandler {
 
     @Override
     public ReturnResult beforeCheckin(@Nullable CommitExecutor executor, PairConsumer<Object, Object> additionalDataConsumer) {
+        startInitToolWindows();
         if (refreshableOnComponent != null && refreshableOnComponent.getState()) {
             toDeal();
             if (problemBiList.size() > 0) {
@@ -58,7 +59,6 @@ class PaiSCodeAnalysisHandler extends CheckinHandler {
     private void toDeal() {
         ProgressManager.getInstance().run(new Task.Modal(checkinProjectPanel.getProject(), "Check Bi Annotation Method Changes...", true) {
             public void run(@NotNull ProgressIndicator progressIndicator) {
-                startInitToolWindows();
                 problemBiList.clear();
                 problemBiList.addAll(ContrastBiMethod.collectMethod(checkinProjectPanel.getSelectedChanges()));
             }
@@ -85,7 +85,7 @@ class PaiSCodeAnalysisHandler extends CheckinHandler {
     private void startInitToolWindows() {
         ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(checkinProjectPanel.getProject());
         ToolWindow window = toolWindowManager.getToolWindow(ID);
-        if (window != null) {
+        if (window != null && window.getContentManager().getContentCount() > 0) {
             window.getContentManager().removeAllContents(true);
         }
     }
