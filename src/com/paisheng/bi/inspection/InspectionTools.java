@@ -10,9 +10,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBList;
+import com.intellij.ui.components.JBPanel;
+import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.components.panels.VerticalLayout;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import com.intellij.util.ui.JBUI;
 import com.paisheng.bi.bean.BiClassMethod;
 import com.paisheng.bi.ui.BiListLabel;
 
@@ -26,8 +31,13 @@ import java.util.List;
 public class InspectionTools {
     public static void addTab(final Project project, ToolWindow window, final List<BiClassMethod> problemBiList) {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+        JBPanel jPanel = new JBPanel(new VerticalLayout(0));
+        JBLabel jLabelTitle = new JBLabel("Changes " + problemBiList.size() + " file");
+        jLabelTitle.setBorder(JBUI.Borders.empty(3));
+        jPanel.add(jLabelTitle);
         final JBList<String[]> jbList = new JBList<>(getDefaultListModel(problemBiList));
-        Content content = contentFactory.createContent(jbList, "TuandaiBiChange", false);
+        JBScrollPane jScrollPane = new JBScrollPane(jPanel);
+        Content content = contentFactory.createContent(jScrollPane, "TuandaiBiChange", false);
         window.getContentManager().addContent(content);
         jbList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jbList.addMouseListener(new MouseAdapter() {
@@ -37,6 +47,8 @@ public class InspectionTools {
             }
         });
         jbList.setCellRenderer(new BiListLabel());
+        jbList.setBorder(JBUI.Borders.emptyLeft(35));
+        jPanel.add(jbList);
     }
 
     private static ListModel<String[]> getDefaultListModel(List<BiClassMethod> problemBiList) {
