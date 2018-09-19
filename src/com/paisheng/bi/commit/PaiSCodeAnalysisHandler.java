@@ -26,7 +26,7 @@ class PaiSCodeAnalysisHandler extends CheckinHandler {
     private static final String ID = "PaiSTool";
     private BiRefreshableOnComponent refreshableOnComponent;
     private CheckinProjectPanel checkinProjectPanel;
-    private List<BiClassMethod> problemBiList = new ArrayList<BiClassMethod>();
+    private List<BiClassMethod> problemBiList = new ArrayList<>();
 
 
     PaiSCodeAnalysisHandler(CheckinProjectPanel checkinProjectPanel) {
@@ -58,6 +58,7 @@ class PaiSCodeAnalysisHandler extends CheckinHandler {
     private void toDeal() {
         ProgressManager.getInstance().run(new Task.Modal(checkinProjectPanel.getProject(), "Check Bi Annotation Method Changes...", true) {
             public void run(@NotNull ProgressIndicator progressIndicator) {
+                startInitToolWindows();
                 problemBiList.clear();
                 problemBiList.addAll(ContrastBiMethod.collectMethod(checkinProjectPanel.getSelectedChanges()));
             }
@@ -73,12 +74,19 @@ class PaiSCodeAnalysisHandler extends CheckinHandler {
                 window = toolWindowManager.registerToolWindow("PaiSTool", true, ToolWindowAnchor.BOTTOM);
                 window.setIcon(IconLoader.getIcon("/image/ic_menu.png"));
             }
-            window.getContentManager().removeAllContents(true);
             ToolWindow finalWindow = window;
             window.show(() -> InspectionTools.addTab(checkinProjectPanel.getProject(), finalWindow, problemBiList));
             return CheckinHandler.ReturnResult.CLOSE_WINDOW;
         } else {
             return CheckinHandler.ReturnResult.COMMIT;
+        }
+    }
+
+    private void startInitToolWindows() {
+        ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(checkinProjectPanel.getProject());
+        ToolWindow window = toolWindowManager.getToolWindow(ID);
+        if (window != null) {
+            window.getContentManager().removeAllContents(true);
         }
     }
 }
