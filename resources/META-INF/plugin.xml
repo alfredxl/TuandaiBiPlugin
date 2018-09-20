@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.alfredxl.tuandai</id>
     <name>TuandaiBI</name>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <vendor email="765947965@qq.com" url="https://github.com/alfredxl/TuandaiBiPlugin">No Company</vendor>
 
     <description><![CDATA[
@@ -10,8 +10,14 @@
     2, automatically add response notes on the user selected method; <br / >
   ]]></description>
 
-    <change-notes>
-    </change-notes>
+    <change-notes><![CDATA[
+    <html>
+    <b>1.0.1</b> (9/20/2019)
+    <ul>
+      <li>Add Bi method change detection when the code is submitted</li>
+    </ul>
+    </html>
+    ]]></change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <idea-version since-build="173.0"/>
