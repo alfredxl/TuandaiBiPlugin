@@ -20,6 +20,7 @@ import com.intellij.ui.content.ContentFactory;
 import com.intellij.util.ui.JBUI;
 import com.paisheng.bi.bean.BiClassMethod;
 import com.paisheng.bi.ui.BiListLabel;
+import com.paisheng.bi.util.ContrastBiMethod;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -53,10 +54,11 @@ public class InspectionTools {
 
     private static ListModel<String[]> getDefaultListModel(List<BiClassMethod> problemBiList) {
         DefaultListModel<String[]> myListModel = new DefaultListModel<>();
+        int fileExtensionLength = ContrastBiMethod.FILE_EXTENSION.length();
         for (BiClassMethod biClassMethod : problemBiList) {
             String path = biClassMethod.isHasDelete() ? biClassMethod.getBeforeVirtualFilePath() : biClassMethod.getAfterVirtualFilePath();
             int index = path.lastIndexOf("/");
-            String name = path.substring(index + 1, path.length() - 5);
+            String name = path.substring(index + 1, path.length() - fileExtensionLength);
             String parentPath = path.substring(0, index);
             myListModel.addElement(new String[]{name, parentPath, biClassMethod.isHasDelete() ? "0" : "1"});
         }
@@ -82,7 +84,7 @@ public class InspectionTools {
                 if (afterFile.exists()) {
                     VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByIoFile(afterFile);
                     if (virtualFile != null) {
-                        FileEditorManager.getInstance(project).openFile(virtualFile, true, true);
+                        FileEditorManager.getInstance(project).openFile(virtualFile, false, false);
                     }
                 }
             }

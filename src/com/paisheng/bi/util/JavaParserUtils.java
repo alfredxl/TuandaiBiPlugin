@@ -1,42 +1,36 @@
 package com.paisheng.bi.util;
 
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.paisheng.bi.bean.BiMethodDeclaration;
-import japa.parser.JavaParser;
-import japa.parser.ParseException;
-import japa.parser.ast.*;
-import japa.parser.ast.body.*;
-import japa.parser.ast.expr.AnnotationExpr;
-import japa.parser.ast.visitor.VoidVisitorAdapter;
 
-import java.io.StringReader;
 import java.util.Map;
 
 public class JavaParserUtils {
     public static void parse(String code, final Map<String, BiMethodDeclaration> map) {
-        try {
-            CompilationUnit compilationUnit = JavaParser.parse(new StringReader(code));
-            VoidVisitorAdapter<Object> adapter = new VoidVisitorAdapter<Object>() {
+        CompilationUnit compilationUnit = JavaParser.parse(code);
+        VoidVisitorAdapter<Object> adapter = new VoidVisitorAdapter<Object>() {
 
-                @Override
-                public void visit(MethodDeclaration n, Object arg) {
-                    super.visit(n, arg);
-                    if (n.getAnnotations() != null) {
-                        for (AnnotationExpr annotationExpr : n.getAnnotations()) {
-                            if (annotationExpr.getName().toString().matches(BiMethodDeclaration.NAME_REGEX)) {
-                                BiMethodDeclaration biMethodDeclaration = new BiMethodDeclaration();
-                                biMethodDeclaration.setMethodDeclaration(n);
-                                map.put(getName(map, n.getName(), 0), biMethodDeclaration);
-                                break;
-                            }
+            @Override
+            public void visit(MethodDeclaration n, Object arg) {
+                super.visit(n, arg);
+                if (n.getAnnotations() != null) {
+                    for (AnnotationExpr annotationExpr : n.getAnnotations()) {
+                        if (annotationExpr.getName().asString().matches(BiMethodDeclaration.NAME_REGEX)) {
+                            BiMethodDeclaration biMethodDeclaration = new BiMethodDeclaration();
+                            biMethodDeclaration.setMethodDeclaration(n);
+                            map.put(getName(map, n.getName().asString(), 0), biMethodDeclaration);
+                            break;
                         }
                     }
                 }
-            };
-            adapter.visit(compilationUnit, null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+            }
+        };
+        adapter.visit(compilationUnit, null);
     }
 
     private static String getName(Map<String, BiMethodDeclaration> map, String name, int type) {

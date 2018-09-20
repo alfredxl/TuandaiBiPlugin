@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 class PaiSCodeAnalysisHandler extends CheckinHandler {
-    private static final String ID = "PaiSTool";
+    private static final String ID = "PSTool";
     private BiRefreshableOnComponent refreshableOnComponent;
     private CheckinProjectPanel checkinProjectPanel;
     private List<BiClassMethod> problemBiList = new ArrayList<>();
@@ -66,13 +66,13 @@ class PaiSCodeAnalysisHandler extends CheckinHandler {
     }
 
     private ReturnResult showDialog() {
-        if (Messages.showOkCancelDialog(checkinProjectPanel.getProject(), "\r\nFound the Bi annotation method was changed!\r\n",
-                "Bi Method Change Detection", "View changes", "Commit Anyway", null) == Messages.OK) {
+        if (Messages.showOkCancelDialog(checkinProjectPanel.getProject(), "\r\nFound the Bi annotation\r\n method was changed!\r\n",
+                "Bi Method Change Detection", "View changes", "Commit Anyway", IconLoader.getIcon("/image/ic_tips.png")) == Messages.OK) {
             ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(checkinProjectPanel.getProject());
             ToolWindow window = toolWindowManager.getToolWindow(ID);
             if (window == null) {
-                window = toolWindowManager.registerToolWindow("PaiSTool", true, ToolWindowAnchor.BOTTOM);
-                window.setIcon(IconLoader.getIcon("/image/ic_menu.png"));
+                window = toolWindowManager.registerToolWindow(ID, true, ToolWindowAnchor.BOTTOM);
+                window.setIcon(IconLoader.getIcon("/image/ic_paisheng.png"));
             }
             ToolWindow finalWindow = window;
             window.show(() -> InspectionTools.addTab(checkinProjectPanel.getProject(), finalWindow, problemBiList));

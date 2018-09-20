@@ -1,13 +1,13 @@
 package com.paisheng.bi.util;
 
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.changes.Change;
 import com.intellij.openapi.vcs.changes.ContentRevision;
 import com.paisheng.bi.bean.BiClassMethod;
 import com.paisheng.bi.bean.BiMethodDeclaration;
-import japa.parser.ast.body.MethodDeclaration;
-import japa.parser.ast.body.Parameter;
-import japa.parser.ast.expr.AnnotationExpr;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,13 +15,16 @@ import java.util.List;
 import java.util.Map;
 
 public class ContrastBiMethod {
+
+    public static final String FILE_EXTENSION = ".java";
+
     /*** 收集有改动的类 ***/
     public static List<BiClassMethod> collectMethod(Collection<Change> changes) {
-        List<BiClassMethod> problemBiList = new ArrayList<BiClassMethod>();
+        List<BiClassMethod> problemBiList = new ArrayList<>();
         for (Change item : changes) {
             // 只对旧有代码有的做检测
             ContentRevision revisionBefore = item.getBeforeRevision();
-            if (revisionBefore != null && revisionBefore.getFile().getName().endsWith(".java")) {
+            if (revisionBefore != null && revisionBefore.getFile().getName().endsWith(FILE_EXTENSION)) {
                 BiClassMethod biClassMethod = new BiClassMethod();
                 ContentRevision revisionAfter = item.getAfterRevision();
                 biClassMethod.setHasDelete(revisionAfter == null);
@@ -113,7 +116,7 @@ public class ContrastBiMethod {
         if (annotationsBefore != null) {
             for (AnnotationExpr beforeItem : annotationsBefore) {
                 // 只对Bi注解进行检测
-                if (beforeItem.getName().toString().matches(BiMethodDeclaration.NAME_REGEX)) {
+                if (beforeItem.getName().asString().matches(BiMethodDeclaration.NAME_REGEX)) {
                     // 定义单个注解
                     boolean singleHasSampleAnnotation = false;
                     if (annotationsAfter != null) {
@@ -139,8 +142,8 @@ public class ContrastBiMethod {
                         if (parametersBefore.size() == parametersAfter.size()) {
                             // 参数数量相同
                             for (int i = 0; i < parametersBefore.size(); i++) {
-                                if (!parametersBefore.get(i).getType().toString().equals(
-                                        parametersAfter.get(i).getType().toString())) {
+                                if (!parametersBefore.get(i).getType().asString().equals(
+                                        parametersAfter.get(i).getType().asString())) {
                                     // 参数类型不同
                                     isSampleMethod = false;
                                     break;
