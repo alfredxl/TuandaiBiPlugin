@@ -20,7 +20,7 @@ public class JavaParserUtils {
                 super.visit(n, arg);
                 if (n.getAnnotations() != null) {
                     for (AnnotationExpr annotationExpr : n.getAnnotations()) {
-                        if (annotationExpr.getName().asString().matches(BiMethodDeclaration.NAME_REGEX)) {
+                        if (annotationExpr.getName().asString().matches(PropertiesComponentUtil.getBiConfigData())) {
                             BiMethodDeclaration biMethodDeclaration = new BiMethodDeclaration();
                             biMethodDeclaration.setMethodDeclaration(n);
                             map.put(getName(map, n.getName().asString(), 0), biMethodDeclaration);

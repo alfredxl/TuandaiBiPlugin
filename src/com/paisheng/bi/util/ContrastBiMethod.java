@@ -116,7 +116,7 @@ public class ContrastBiMethod {
         if (annotationsBefore != null) {
             for (AnnotationExpr beforeItem : annotationsBefore) {
                 // 只对Bi注解进行检测
-                if (beforeItem.getName().asString().matches(BiMethodDeclaration.NAME_REGEX)) {
+                if (beforeItem.getName().asString().matches(PropertiesComponentUtil.getBiConfigData())) {
                     // 定义单个注解
                     boolean singleHasSampleAnnotation = false;
                     if (annotationsAfter != null) {

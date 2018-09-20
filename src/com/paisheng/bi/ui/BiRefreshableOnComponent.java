@@ -2,17 +2,18 @@ package com.paisheng.bi.ui;
 
 import com.intellij.openapi.vcs.ui.RefreshableOnComponent;
 import com.intellij.ui.NonFocusableCheckBox;
+import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.panels.HorizontalLayout;
 
 import javax.swing.*;
 
 public class BiRefreshableOnComponent implements RefreshableOnComponent {
     private JCheckBox checkBox;
-    private JPanel jPanel;
+    private JBPanel jPanel;
 
     public BiRefreshableOnComponent() {
         checkBox = new NonFocusableCheckBox("Tuandai Bi Code Check");
-        jPanel = new JPanel(new HorizontalLayout(0));
+        jPanel = new JBPanel(new HorizontalLayout(0));
         jPanel.add(checkBox);
     }
 
